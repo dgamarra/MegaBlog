@@ -9,6 +9,10 @@ const authMiddleware = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'supersecretkey');
+    // El payload debe traer los campos que emite el login (id y role)
+    if (!decoded.id || !decoded.role) {
+      return res.status(401).json({ message: 'Invalid token' });
+    }
     req.user = decoded;
     next();
   } catch (error) {

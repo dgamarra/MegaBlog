@@ -2,18 +2,26 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const userRepository = require('../repositories/userRepository');
 
+// Error con código HTTP para que errorMiddleware lo devuelva con el status correcto
+const httpError = (status, message) => {
+  const error = new Error(message);
+  error.status = status;
+  return error;
+};
+
 class AuthService {
   async register(userData) {
     const existingUser = await userRepository.findByEmail(userData.email);
     if (existingUser) {
-      throw new Error('User already exists');
+      throw httpError(409, 'User already exists');
     }
 
     const hashedPassword = await bcrypt.hash(userData.password, 10);
     const user = await userRepository.create({
       ...userData,
       password: hashedPassword,
-      role: userData.role || 'user'
+      // El rol nunca se acepta del cliente: evita escalada de privilegios
+      role: 'user'
     });
 
     const { password, ...userWithoutPassword } = user;
@@ -23,12 +31,12 @@ class AuthService {
   async login(email, password) {
     const user = await userRepository.findByEmail(email);
     if (!user) {
-      throw new Error('Invalid credentials');
+      throw httpError(401, 'Invalid credentials');
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      throw new Error('Invalid credentials');
+      throw httpError(401, 'Invalid credentials');
     }
 
     const token = jwt.sign(
