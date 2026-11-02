@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+.npm
+
+# Environment
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+
+# Database
+server/db/*.json
+
+# Build
+dist/
+build/
