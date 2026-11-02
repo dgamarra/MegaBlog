@@ -39,7 +39,7 @@ const Home = () => {
           Discover stories, <span className="text-primary-500">ideas</span>, and expertise from writers on any topic.
         </motion.h1>
         <p className="text-slate-400 text-xl max-w-2xl leading-relaxed">
-          The MegaBlog is a platform where high-quality content meets AI analysis to provide you with the best insights.
+          MegaBlog es una plataforma donde el contenido de alta calidad se combina con el análisis mediante IA para ofrecerte las mejores perspectivas.
         </p>
       </header>
 
